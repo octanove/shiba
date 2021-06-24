@@ -1,9 +1,9 @@
 # Training Steps
-This file provides a high-level overview of the steps we took to train the model and measure its performance. It is mostly designed to help anyone make the training reproducible. 
+This file provides a high-level overview of the steps we took to train the model and measure its performance. It is mostly designed to help make the training reproducible. 
 
 
 ## Pretraining Data
-First, you will need a working install of Mecab (this is used to split sentences), along with [NEologd](https://github.com/neologd/mecab-ipadic-neologd) dictionary. The [install_mecab.sh](training/data/install_mecab.sh) script may be helpful here, but ultimately the installation method depends on your environment. After that, the data can be downloaded and preprocessed with the following commands
+First, you will need a working install of Mecab (this is used to split sentences), along with [NEologd](https://github.com/neologd/mecab-ipadic-neologd) dictionary. The [install_mecab.sh](training/data/install_mecab.sh) script may be helpful here, but ultimately the installation method depends on your environment. After that, the data can be downloaded and preprocessed with the following commands:
 
 ```shell
 wget https://dumps.wikimedia.org/other/cirrussearch/current/jawiki-20210510-cirrussearch-content.json.gz
@@ -13,7 +13,7 @@ pyton to_examples.py --input_data preprocessed.txt --output_data all_examples.js
 
 ## Pretraining
 
-Pretraining the model only requires one command, but it will take a while to run. The below is the command we used for training on 8 GPUs, but if you have more compute available you can tune the batch size and gradient accumulation steps accordingly. Note that we looked at performance on downstream tasks for the 15k/30k/45k/60k checkpoints and found the 45k checkpoint to perform the best, so that's the one we publish
+Pretraining the model only requires one command, but it will take quite a while to run. Below is the command we used for training on 8 GPUs, but if you have more compute available you can tune the batch size and gradient accumulation steps accordingly. Note that we looked at performance on downstream tasks for the 15k/30k/45k/60k checkpoints and found the 45k checkpoint to perform the best.
 
 ```shell
 python training/train.py \

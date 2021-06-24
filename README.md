@@ -9,9 +9,9 @@ SHIBA is an approximate reimplementation of CANINE[[1]](#1) in raw Pytorch, pret
 
 The biggest advantages SHIBA provides are in terms of utility, because (like CANINE) it:
 1. Runs on raw characters, and so has no vocabulary limitations. You can fine tune it on words or languages it's never seen before.
-2. Efficiently handles a lot of characters. You can get 4x as many character embeddings in one pass (2048) for a comparable amount of compute. 
+2. Efficiently handles a lot of characters. Compared to caracter-level BERT models, you can get 4x as many character embeddings in one pass (2048) for a comparable amount of compute.
 
-That said, We compared SHIBA against baselines on two downstream tasks, and it also performs pretty well.
+That said, we compared SHIBA against baselines on two downstream tasks, and it also performs pretty well.
 
 # Performance 
 The first task was classification on the [Livedoor News Corpus](https://www.rondhuit.com/download.html), using as much of the article as we text as we could fit into the model in one pass. 
@@ -50,7 +50,7 @@ inputs = tokenizer.encode_batch(['自然言語処理', '柴ドリル'])
 outputs = shiba_model(**inputs)
 ```
 
-SGUVA can then be fine-tuned for classification or character-level tasks just like any other transformer encoder. Adding task-specific layers should be relatively easy, but premade models for classification and sequence labeling are also included. These are `ShibaForClassification` and `ShibaForSequenceLabeling`, respectively. 
+SHIBA can then be fine-tuned for classification or character-level tasks just like any other transformer encoder. Adding task-specific layers should be relatively easy, but premade models for classification and sequence labeling are also included. These are `ShibaForClassification` and `ShibaForSequenceLabeling`, respectively. 
 
 ```python
 from shiba import ShibaForClassification
@@ -81,7 +81,7 @@ The model code can be found [here](shiba/model.py), and the tokenizer code can b
 
 ## Training Methodology
 
-We trained on the Japanese Wikipedia corpus, using mostly identical preprocessing to the Tohoku University [Japanese Bert](https://github.com/cl-tohoku/bert-japanese) model. Training example creation was done similarly to RoBERTa[[2]](#2), packing as many sentences as will fit into each training example. Our masking strategy was _random span masking_, whereby we perform dynamic random masking on contiguous spans of characters. Where `[M]` is a unicode codepoint representing a mask character, an example masking transformation might look like the below.
+We trained on the Japanese Wikipedia corpus, using mostly identical preprocessing to the Tohoku University [Japanese Bert](https://github.com/cl-tohoku/bert-japanese) model. Training example creation was done similarly to RoBERTa[[2]](#2), packing as many sentences as could fit into each training example. Our masking strategy was _random span masking_, whereby we perform dynamic random masking on contiguous spans of characters. Where `[M]` is a unicode codepoint representing a mask character, an example masking transformation might look like the below.
 
 > 柴犬は最強の犬種である
 > 
