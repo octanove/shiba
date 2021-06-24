@@ -1,0 +1,17 @@
+shiba-model
+#torch==1.8.1+cu111
+
+# training requirements
+tokenizers
+datasets
+fugashi==1.1.0
+tqdm
+jsonlines
+mpi4py
+transformers==4.6.1
+conllu==4.4 # universal dependencies
+wandb
+ipadic
+torchmetrics==0.3.2
+conllu==4.4
+ipadic
