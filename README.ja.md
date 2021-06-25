@@ -42,6 +42,7 @@ UD 上の単語分割において MeCab を超えるのは難しそうですが�
 from shiba import Shiba, CodepointTokenizer, get_pretrained_state_dict
 shiba_model = Shiba()
 shiba_model.load_state_dict(get_pretrained_state_dict())
+shiba_model.eval() # disable dropout
 tokenizer = CodepointTokenizer()
 
 inputs = tokenizer.encode_batch(['自然言語処理', '柴ドリル'])

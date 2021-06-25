@@ -44,6 +44,7 @@ For an example of how to load and use the pretrained model, see below. `get_pret
 from shiba import Shiba, CodepointTokenizer, get_pretrained_state_dict
 shiba_model = Shiba()
 shiba_model.load_state_dict(get_pretrained_state_dict())
+shiba_model.eval() # disable dropout
 tokenizer = CodepointTokenizer()
 
 inputs = tokenizer.encode_batch(['自然言語処理', '柴ドリル'])
