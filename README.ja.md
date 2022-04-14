@@ -1,6 +1,7 @@
 # SHIBAとは
 
-SHIBA は、日本語 Wikipedia コーパスを用いて事前学習した CANINE[[1]](#1) モデルの PyTorch 再実装です。CANINE をご存知なければ、非常に効率の高いな文字レベル BERT モデルだと考えてください。もちろん、SHIBA という名前は日本の canine (犬)である柴犬に由来しています。
+SHIBA は、日本語 Wikipedia コーパスを用いて事前学習した CANINE[[1]](#1) モデルの PyTorch 再実装です。
+CANINE をご存知なければ、非常に高効率な文字レベル BERT モデルだと考えてください。もちろん、SHIBA という名前は日本の canine (犬)である柴犬に由来しています。
 
 ![CANINE/SHIBA Architecture](canine_architecture.png "CANINE/SHIBA Architecture")
 
@@ -34,9 +35,13 @@ UD 上の単語分割において MeCab を超えるのは難しそうですが�
 
 モデルだけの使用なら、以下のようにインストールできます：
 
-> pip install shiba-model
+```bash
+pip install shiba-model
+```
 
-日本語 Wikipedia で事前学習したチェックポイントは下記のように使えます。`get_pretrained_state_dict()` は自動的にチェックポイントをダウンロードします。自分でダウンロードしたい方は[ここ](https://storage.googleapis.com/shiba.octanove.com/published_checkpoints/shiba_check45k.pt)からダウンロードできます。
+日本語 Wikipedia で事前学習したチェックポイントは下記のように使えます。
+`get_pretrained_state_dict()` は自動的にチェックポイントをダウンロードします。
+自分でダウンロードしたい方は[ここ](https://storage.googleapis.com/shiba.octanove.com/published_checkpoints/shiba_check45k.pt)からダウンロードできます。
 
 ```python
 from shiba import Shiba, CodepointTokenizer, get_pretrained_state_dict
@@ -49,7 +54,8 @@ inputs = tokenizer.encode_batch(['自然言語処理', '柴ドリル'])
 outputs = shiba_model(**inputs)
 ```
 
-他のトランスフォーマーのエンコーダと同様に、分類や文字レベルタスクに合わせてファインチューニングできます。タスク固有レイヤーを付け足すのは簡単なはずですが、本リポジトリには、分類と系列ラベリングに使えるモデル `ShibaForClassification` と `ShibaForSequenceLabeling` も含まれています。
+他のトランスフォーマーのエンコーダと同様に、分類や文字レベルタスクに合わせてファインチューニングできます。
+タスク固有レイヤーを付け足すのは簡単なはずですが、本リポジトリには、分類と系列ラベリングに使えるモデル `ShibaForClassification` と `ShibaForSequenceLabeling` も含まれています。
 
 ```python
 from shiba import ShibaForClassification
@@ -63,7 +69,8 @@ cls_model.load_encoder_checkpoint()
 
 # 詳細
 
-近いうちに、SHIBA に関する技術ブログを公開するつもりです。以下に、重要な詳細を記載します。
+近いうちに、SHIBA に関する技術ブログを公開するつもりです。
+以下に、重要な詳細を記載します。
 
 ## CANINE との違い
 
@@ -75,11 +82,15 @@ SHIBA の構造は CANINEとほぼ同じですが、注意すべき違いがい�
 
 ## モデルのコード
 
-モデルのコードは [model.py](shiba/model.py) に、トークナイザーは [codepoint_tokenizer.py](shiba/codepoint_tokenizer.py) にあります。わかりやすさと変更のしやすさを意識して書いたコードなので、モデルの細かい仕組みを理解したい場合は、コードを自分で読んだりいじったりしていただくのが一番早いかもしれません。
+モデルのコードは [model.py](shiba/model.py) に、トークナイザーは [codepoint_tokenizer.py](shiba/codepoint_tokenizer.py) にあります。
+わかりやすさと変更のしやすさを意識して書いたコードなので、モデルの細かい仕組みを理解したい場合は、コードを自分で読んだりいじったりしていただくのが一番早いかもしれません。
 
 ## 学習方法
 
-日本語 Wikipedia コーパスを学習データとして使い、東北大学の[日本語 BERT](https://github.com/cl-tohoku/bert-japanese)とほぼ同様な全処理をしました。訓練インスタンスの生成は RoBERTa[[2]](#2)と同様に、インスタンスにつきできるだけ多くの文を詰め込みました。マスキングには、ランダムスパンマスキングという動的にランダムなスパンをマスクする手法を使いました。`[M]`がマスク文字を表す Unicode コードポイントだとすると、マスキングの具体例は下記のようになります
+日本語 Wikipedia コーパスを学習データとして使い、東北大学の[日本語 BERT](https://github.com/cl-tohoku/bert-japanese)とほぼ同様な全処理をしました。
+訓練インスタンスの生成は RoBERTa[[2]](#2)と同様に、インスタンスにつきできるだけ多くの文を詰め込みました。
+マスキングには、ランダムスパンマスキングという動的にランダムなスパンをマスクする手法を使いました。
+`[M]`がマスク文字を表す Unicode コードポイントだとすると、マスキングの具体例は下記のようになります
 
 > 柴犬は最強の犬種である
 > 
@@ -87,11 +98,13 @@ SHIBA の構造は CANINEとほぼ同じですが、注意すべき違いがい�
 
 マスクされたスパンを置き換える際には、同じデータで学習されたBPE語彙からランダムで同じ長さのものが選択されます。学習を再現したい方は、[TRAINING.md](TRAINING.md)をご参考ください。
 
-マスキング手法を含め、ハイパーパラメータはデータのサブセットにおける性能に基づいて決めました。また、トランスフォーマーエンコーダの学習を扱う RoBERTa[[2]](#2) と Academic Budget BERT[[3]](#3) で使われているハイパーパラメータも参考にしました。
+マスキング手法を含め、ハイパーパラメータはデータのサブセットにおける性能に基づいて決めました。
+また、トランスフォーマーエンコーダの学習を扱う RoBERTa[[2]](#2) と Academic Budget BERT[[3]](#3) で使われているハイパーパラメータも参考にしました。
 
 ## 学習コード
 
-SHIBA の学習用の実装もこのリポジトリに含まれています。モデルのコードに比べると、学習コードは依存関係が多くあまり洗練されていませんが、同じようなモデルを学習したい場合には役に立つかもしれません。ランダムスパンマスキングとランダムBPEマスキングの実装は [masking.py](training/masking.py) で見られます。
+SHIBA の学習用の実装もこのリポジトリに含まれています。
+モデルのコードに比べると、学習コードは依存関係が多くあまり洗練されていませんが、同じようなモデルを学習したい場合には役に立つかもしれません。ランダムスパンマスキングとランダムBPEマスキングの実装は [masking.py](training/masking.py) で見られます。
 
 ## チェックポイント
 
