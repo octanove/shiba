@@ -98,6 +98,18 @@ Our hyperparameters (including the masking type) were chosen based their perform
 
 This repository also includes the code used for actually training the SHIBA model (which is not in the `shiba-model` package). This code has significantly more dependencies than just the model and is not as polished, but if you are considering training a SHIBA/CANINE model it may be of interest to you. In particular, there are implementations of BPE masking and random span masking in the [masking.py](training/masking.py) file. 
 
+## Docker Image
+
+1. Install [Docker](https://docs.docker.com/get-docker/).
+2. Run `docker pull sohaibanwaar/shiba` to download the image.
+3. Run `docker run -it -p 8888:8888 --gpus all -v <Code path on your local>:/shiba sohaibanwaar/shiba /bin/bash` to start the container.
+4. conda activate shiba
+5. cd /shiba
+6. `jupyter notebook --ip 0.0.0.0 --no-browser --allow-root`
+7. Now you can access the jupyter notebook at `http://localhost:8888/` in your browser.
+
+### Note: You can also run and install jupyter notebook here.
+
 ## Checkpoints
 
 The default model is the encoder model that performs best on downstream tasks, but we provide a few other checkpoints. 
