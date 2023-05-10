@@ -1,0 +1,11 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+authors:
+- family-names: "Tanner"
+  given-names: "Joshua"
+- family-names: "Hagiwara"
+  given-names: "Masato"
+title: "SHIBA: Japanese CANINE model"
+version: 0.1.1
+date-released: 2021-06-24
+url: "https://github.com/octanove/shiba"
