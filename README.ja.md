@@ -40,13 +40,13 @@ pip install shiba-model
 ```
 
 日本語 Wikipedia で事前学習したチェックポイントは下記のように使えます。
-`get_pretrained_state_dict()` は自動的にチェックポイントをダウンロードします。
+`get_pretrained_from_hub()` は自動的にチェックポイントをダウンロードします。
 自分でダウンロードしたい方は[ここ](https://storage.googleapis.com/shiba.octanove.com/published_checkpoints/shiba_check45k.pt)からダウンロードできます。
 
 ```python
-from shiba import Shiba, CodepointTokenizer, get_pretrained_state_dict
+from shiba import Shiba, CodepointTokenizer, get_pretrained_from_hub
 shiba_model = Shiba()
-shiba_model.load_state_dict(get_pretrained_state_dict())
+shiba_model.load_state_dict(get_pretrained_from_hub())
 shiba_model.eval() # disable dropout
 tokenizer = CodepointTokenizer()
 
@@ -111,12 +111,12 @@ SHIBA の学習用の実装もこのリポジトリに含まれています。
 デフォルトのモデルは下流タスクで最も高い性能を発揮したものですが、他に言語モデルのチェックポイントなども提供しています。
 
 
-| Type              | Step | Note            |
-|-------------------|------|-----------------|
-| [Encoder Only](https://storage.googleapis.com/shiba.octanove.com/published_checkpoints/shiba_check45k.pt)      | 45k  | (default model) |
-| [Encoder Only](https://storage.googleapis.com/shiba.octanove.com/published_checkpoints/shiba_check60k.pt)     | 60k  |                 |
-| [LM Head + Encoder](https://storage.googleapis.com/shiba.octanove.com/published_checkpoints/lm_check45k.pt) | 45k  |                 |
-| [LM Head + Encoder](https://storage.googleapis.com/shiba.octanove.com/published_checkpoints/lm_check60k.pt) | 60k  |                 |
+| Type                                                              | Step | Note            |
+|-------------------------------------------------------------------|------|-----------------|
+| [Encoder Only](https://huggingface.co/octanove/shiba-enc-45k)     | 45k  | (default model) |
+| [Encoder Only](https://huggingface.co/octanove/shiba-enc-60k)     | 60k  |                 |
+| [LM Head + Encoder](https://huggingface.co/octanove/shiba-lm-45k) | 45k  |                 |
+| [LM Head + Encoder](https://huggingface.co/octanove/shiba-lm-60k) | 60k  |                 |
 
 # ライセンス
 

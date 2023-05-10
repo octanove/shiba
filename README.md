@@ -38,12 +38,12 @@ If you just want to use the SHIBA model, you can install it like this:
 > pip install shiba-model
 
 
-For an example of how to load and use the pretrained model, see below. `get_pretrained_state_dict()` will automatically download the pretrained model for you, but if you'd like to do it yourself the model can be downloaded from [here](https://storage.googleapis.com/shiba.octanove.com/published_checkpoints/shiba_check45k.pt).
+For an example of how to load and use the pretrained model, see below. `get_pretrained_from_hub()` will automatically download the pretrained model for you, but if you'd like to do it yourself the model can be downloaded from [here](https://storage.googleapis.com/shiba.octanove.com/published_checkpoints/shiba_check45k.pt).
 
 ```python
-from shiba import Shiba, CodepointTokenizer, get_pretrained_state_dict
+from shiba import Shiba, CodepointTokenizer, get_pretrained_from_hub
 shiba_model = Shiba()
-shiba_model.load_state_dict(get_pretrained_state_dict())
+shiba_model.load_state_dict(get_pretrained_from_hub())
 shiba_model.eval() # disable dropout
 tokenizer = CodepointTokenizer()
 
@@ -100,14 +100,14 @@ This repository also includes the code used for actually training the SHIBA mode
 
 ## Checkpoints
 
-The default model is the encoder model that performs best on downstream tasks, but we provide a few other checkpoints. 
+The default model is the encoder model that performs best on downstream tasks, but we provide a few other checkpoints.
 
-| Type              | Step | Note            |
-|-------------------|------|-----------------|
-| [Encoder Only](https://storage.googleapis.com/shiba.octanove.com/published_checkpoints/shiba_check45k.pt)      | 45k  | (default model) |
-| [Encoder Only](https://storage.googleapis.com/shiba.octanove.com/published_checkpoints/shiba_check60k.pt)     | 60k  |                 |
-| [LM Head + Encoder](https://storage.googleapis.com/shiba.octanove.com/published_checkpoints/lm_check45k.pt) | 45k  |                 |
-| [LM Head + Encoder](https://storage.googleapis.com/shiba.octanove.com/published_checkpoints/lm_check60k.pt) | 60k  |                 |
+| Type                                                              | Step | Note            |
+|-------------------------------------------------------------------|------|-----------------|
+| [Encoder Only](https://huggingface.co/octanove/shiba-enc-45k)     | 45k  | (default model) |
+| [Encoder Only](https://huggingface.co/octanove/shiba-enc-60k)     | 60k  |                 |
+| [LM Head + Encoder](https://huggingface.co/octanove/shiba-lm-45k) | 45k  |                 |
+| [LM Head + Encoder](https://huggingface.co/octanove/shiba-lm-60k) | 60k  |                 |
 
 # Licensing
 
