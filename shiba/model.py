@@ -7,6 +7,7 @@ from types import SimpleNamespace
 from typing import Dict, Optional, Tuple
 
 import torch
+from huggingface_hub import hf_hub_url
 
 from shiba.codepoint_tokenizer import CodepointTokenizer
 from shiba.local_transformer_encoder_layer import LocalTransformerEncoderLayer
@@ -251,6 +252,8 @@ class Shiba(torch.nn.Module):
 
 
 def get_pretrained_state_dict():
+    """DEPRECATED: This gets the state dict from Google's cloud storage, and we may eventually delete those files.
+    Safer to get models from the hub."""
     download_url = 'https://storage.googleapis.com/shiba.octanove.com/published_checkpoints/shiba_check45k.pt'
     save_location = Path.home() / '.shiba' / 'pretrained_shiba.pt'
 
@@ -268,14 +271,39 @@ def get_pretrained_state_dict():
     return torch.load(save_location, map_location=torch.device('cpu'))
 
 
+def get_pretrained_from_hub(repo: Optional[str] = None):
+    if repo is None:
+        repo = 'octanove/shiba-enc-45k'
+
+    if not repo.startswith('octanove') or 'shiba' not in repo:
+        raise ValueError('Repo name should look like octanove/shiba-*')
+
+    download_url = hf_hub_url(repo_id=repo, filename='model.pt')
+    local_model_name = repo.split('/')[1] + '.pt'
+    save_location = Path.home() / '.shiba' / local_model_name
+
+    if not save_location.parent.exists():
+        os.makedirs(save_location.parent, exist_ok=True)
+
+    if not save_location.exists():
+        print(f'Downloading {repo}: {download_url} -> {save_location}')
+        with open(save_location, 'wb') as state_dict_file:
+            response = urllib.request.urlopen(download_url)
+            data = response.read()
+            state_dict_file.write(data)
+        print('Done')
+
+    return torch.load(save_location, map_location=torch.device('cpu'))
+
+
 class ShibaForTask(torch.nn.Module):
     def __init__(self, **kwargs):
         super(ShibaForTask, self).__init__()
         self.shiba_model = Shiba(**kwargs)
 
     def load_encoder_checkpoint(self, checkpoint_location: Optional[str] = None):
-        if checkpoint_location is None:
-            state_dict = get_pretrained_state_dict()
+        if checkpoint_location is None or checkpoint_location.startswith('octanove/shiba-enc'):
+            state_dict = get_pretrained_from_hub(checkpoint_location)
         else:
             state_dict = torch.load(checkpoint_location, map_location=torch.device('cpu'))
 
